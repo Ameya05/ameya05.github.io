@@ -1,9 +1,143 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>My Home</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="My Blog">
+    <meta name="author" content="Ameya Advankar">
+
+    <title>My Randezvous with Tech</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/blog.css" rel="stylesheet">
+
   </head>
+
   <body>
-    <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
-    <div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="en_US" data-type="horizontal" data-theme="dark" data-vanity="ameyaadvankar"><a class="LI-simple-link" href='https://www.linkedin.com/in/ameyaadvankar?trk=profile-badge'>Ameya Advankar</a></div>
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">My Randezvous with Tech</h1>
+        <p class="lead blog-description">A brief insight on various tech related topics</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">Loadbalancing & Service Discovery</h2>
+            <p class="blog-post-meta">February 20, 2017 by <a href="#">Ameya Advankar</a></p>
+			
+            <hr>
+			<h3>Problem Statement:</h3>
+			<hr>
+			<p>We need a way a provide High Availability of the UI Portal through Load balancing and Service Discovery mechanism.  			
+			
+			<hr>
+			<h3>Possible Solutions:</h3>  
+			<hr>
+			<table style="border-collapse: collapse; border: 1px solid black; margin-left: 50px">
+				<thead>
+					<th>Feature</th>
+					<th>Options</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Load Balancing</td>
+						<td><a href="http://www.haproxy.org/" target="_blank">HAProxy</a>, 
+							<a href="http://nginx.org/en/docs/http/load_balancing.html" target="_blank">NGINX</a>, 
+							<a href="http://www.linuxvirtualserver.org/" target="_blank">LVS</a> </td>
+					</tr>
+					<tr>
+						<td>Service Discovery</td>
+						<td>Hashicorp Consul, Apache ZooKeeper</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<hr>
+			<h3>Solution Evaluations:</h3>
+			<hr>
+			<h4>Loadbalancing </h4>
+			<p>For Load Balancing, the choice of standard tool like HAProxy is taken into consideration. HAProxy or High Availability Proxy is an open source software TCP/HTTP Load Balancer and proxying solution. It is used to improve the performance and reliability of a server environment by distributing the workload across multiple servers. It provides extensive configuration capabilities since it acts on level 7 of OSI layer and thus can perform routing based on packet headers.</p>
+			
+			<h4>Registry  </h4> 
+			<p>For building Service Discovery capabilities, we considered using either <a href="https://www.consul.io/" target="_blank">Hashicorp Consul.io</a> or <a href="https://zookeeper.apache.org/" target="_blank">Apache Zookeeper</a> as a Registry. We have had previous experience with using Zookeeper and it provides a plethora of capabilities. Both Consul and Zookeeper can be used for service discovery but Consul is much easier to integrate since it has the basic Service discovery fragment included in it, while with Zookeeper one would have to rather write their own Service Discovery implementation. This can be considered if there is a need for a customized service discovery mechanism in the application. Further differentiation is briefly explained <a href="https://www.consul.io/intro/vs/zookeeper.html" target="_blank">over here</a>. </p>
+			
+			<h4>Service Discovery  </h4> 
+			<p>We have used <a href="https://github.com/gliderlabs/registrator" target="_blank">Registrator</a> for providing Service discovery. It monitors the system, on which it is running, for Docker containers and registers/unregisters all their exposed ports as a unique service instances to the Registry. It provides configuration capabilities to selectively ignore ports / containers based on Environment variables or Labels attached to the Docker container. This provides a simple mechanism to register any service without the need to write our own implementation of Service Discovery and attaching it in our application.  </p>
+			
+			<h4>Dynamic Loadbalancing </h4>  
+			<p>HAProxy supports loadbalancing as per the configuration in its <code>HAProxy.cfg</code> file. For a distributed system, the server addresses are dynamic and hence a static configuration of <code>HAProxy.cfg</code> was not an option. To perform dynamic loadbalancing, <a href="https://github.com/hashicorp/consul-template" target="_blank">Hashicorp consul-template</a> provides a feasible solution which integrates with Consul.io and can be used to update files based on the services registered in Consul at any given time. The consul-template daemon, once started, monitors the services registered in the Consul server and performs the configured tasks whenever a service is registered/ usregistered.  </p>
+			
+			<h4>True zero downtime</h4>
+			<p>While consul-template is an excellent tool for reloading HAProxy on the fly, it does not truly provide zero downtime. While testing the UI portal, it was observed that for a short interval of time during HAProxy reload (using <code>-sf</code> flag), the requests made to the portal failed. </p>
+			
+			<hr>
+			<h3>Conclusion:</h3>
+			<hr>
+			<p>The combination of <em>HAProxy + Consul + consul-template + Registrator</em> provides a feasible and simple solution to Dynamic loadbalancing with service discovery. We could evaluate further options by trying out other recipes and comparing their results with the above solution
+			!<img src="https://github.com/Ameya05/ameya05.github.io/raw/master/Architecture.JPG"/></p>
+			
+			<hr>
+			<h3>Associated Github issues</h3>
+			<hr>
+			<ul>
+				<li><a href="https://github.com/airavata-courses/spring17-laravel-portal/issues/1">Initial CI/CD Setup</a></li>  
+				<li><a href="https://github.com/airavata-courses/spring17-laravel-portal/issues/3">Loadbalancer for Laravel Portal</a></li>  
+				<li><a href="https://github.com/airavata-courses/spring17-laravel-portal/issues/4">Service Discovery for Laravel Portals</a></li>
+				<li><a href="https://github.com/airavata-courses/spring17-laravel-portal/issues/7">Strategy for spawning & managing spot instances?</a></li>
+				<li><a href="https://github.com/airavata-courses/spring17-laravel-portal/issues/11">Create AMI / userdata script for Portal instance</a></li>
+				<li><a href="https://github.com/airavata-courses/spring17-laravel-portal/issues/12">Migrate Laravel portal deploy scripts from Linux to Ubuntu</a></li>
+				<li><a href="https://github.com/airavata-courses/spring17-laravel-portal/issues/13">Test loadbalancer</a></li>
+			</ul>
+			
+			<hr>
+			<h3>Associated Discussions</h3>
+			<hr>
+			<ul>
+				<li><a href="https://lists.apache.org/thread.html/9920eb158bbcf8285472a1b86c689d3d0797d44cba9c3ec0021ad1b5@%3Cdev.airavata.apache.org%3E">Portal mail chain</a></li>
+				<li><a href="https://lists.apache.org/thread.html/a86e07c723db696d0a273c7e592c0248b74b470b2e69dccd2a83a9cc@%3Cdev.airavata.apache.org%3E">Distributed Workload Management discussion</a></li>
+			</ul>
+			
+          </div><!-- /.blog-post -->
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+		  <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
+		  <div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="en_US" data-type="vertical" data-theme="light" data-vanity="ameyaadvankar"><a class="LI-simple-link" href='https://www.linkedin.com/in/ameyaadvankar?trk=profile-badge'>Ameya Advankar</a></div>
+          <!--div class="sidebar-module">
+            <h4>Archives</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">March 2014</a></li>
+              <li><a href="#">February 2014</a></li>
+            </ol>
+          </div-->
+          <div class="sidebar-module">
+            <h4>Connect</h4>
+            <ol class="list-unstyled">
+              <li><a href="https://github.com/Ameya05" target="_blank">GitHub</a></li>
+			  <li><a href="https://www.linkedin.com/in/ameyaadvankar" target="_blank">LinkedIn</a></li>
+              <li><a href="https://www.facebook.com/Ameya05" target="_blank">Facebook</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
   </body>
 </html>
