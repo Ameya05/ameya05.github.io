@@ -181,3 +181,7 @@ p {
     text-indent: 50px;
     text-align: justify;
 }
+
+ul li{
+	margin: 0 0 5px 0;
+}

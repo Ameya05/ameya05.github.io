@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="My Blog">
+    <meta name="author" content="Ameya Advankar">
+
+    <title>My Randezvous with Tech</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/blog.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">My Randezvous with Tech</h1>
+        <p class="lead blog-description">A brief insight on various tech related topics</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">Loadbalancing & Service Discovery Setup details</h2>
+            <p class="blog-post-meta">February 21, 2017 by <a href="#">Ameya Advankar</a></p>
+			
+            <hr>
+			<h3>Problem Statement:</h3>
+			<hr>
+			<p>Setup a Highly Available UI Portal with Load balancing and Service Discovery mechanism 
+			
+			<hr>
+			<h3>Detailed Solution:</h3>	
+			<hr>
+			
+			<h4> HAProxy </h4>
+			<p>HAProxy can be setup on any server. Once it is installed, we need to configure the <code>Haproxy.cfg</code> file before starting the server.  The following steps can be used to setup base HAProxy on a Ubuntu 16.04 server <pre><code>apt-get install -y haproxy
+echo "ENABLED=1" > /etc/default/haproxy
+service haproxy start</code></pre></p>
+			<p>Configure the authentication and logging information in the <code>HAProxy.cfg</code> file as required and then restart or reload the haproxy service. Now you will have a basic HAProxy server up and running</p>
+			
+			<h4> Consul </h4> 
+			<p>We will be using Consul for Service Discovery and levereging its quorum setup capability to our advantage. We will have 1 Consul agent setup on the server where we have our HAProxy setup. For setting up consul on a server, we can use a <strong>Docker</strong> image <pre><code>docker run -d -e SERVICE_IGNORE \
+			-p 8300:8300 \
+			-p 8301:8301 \
+			-p 8301:8301/udp \
+			-p 8302:8302 \
+			-p 8302:8302/udp \
+			-p 8400:8400 \
+			-p 8500:8500 \
+			-p 8600:53/udp \
+			-h consul --name consul progrium/consul \
+			-server -advertise $HOST_IP_1 -bootstrap</code></pre> </p>
+			
+			<p>Next we will have to setup consul on every server where our services are located. These consul instances will join together and form a quorum. </p><pre><code>docker run -d -e SERVICE_IGNORE \
+			-p 8300:8300 \
+			-p 8301:8301 \
+			-p 8301:8301/udp \
+			-p 8302:8302 \
+			-p 8302:8302/udp \
+			-p 8400:8400 \
+			-p 8500:8500 \
+			-p 8600:53/udp \
+			-h node1 --name node1 progrium/consul \
+			-server -advertise $HOST_IP_2 -join $HOST_IP_1</code></pre> </p>
+			
+			<h4> Registrator  </h4> 
+			<p>We can use Registrator in conjunction with consul to implement service discovery for our service as it provides for code-independent and a plugable approach. All Registrator requires is that the our <strong>service</strong> should be running inside a docker container. Registrator will register any docker container with each exposed port which is started to the consul instance. Since we have consul installed on each server where the service is to be started, we can bind the registrator to the local consul instance.</p>
+			<pre><code>docker run -d \
+	--name=registrator \
+	--net=host \
+	--volume=/var/run/docker.sock:/tmp/docker.sock \
+	gliderlabs/registrator:latest \
+	consul://localhost:8500</code></pre>
+			<p>With this, we have completed the Service Discovery setup. Any service which starts up will get registered to the consul quorum through Registrator</p>
+			
+			<h4> consul-template </h4>  
+			<p>The consul-template daemon provides a way to perform file updates and command executions for consul data changes. We can use this feature to reload HAProxy config for changes in service availability in consul. consul-template will be setup on the server where we HAProxy. consul-template can be configured  for our use case via a <code>.json</code> file as follows -</p>
+			<ul class="list-group">
+				<li class="list-group-item"><strong>source:</strong> This is the <code>.ctmpl</code> Template file. It has code related to iterating and generating meaningful data from consul</li>
+				<li class="list-group-item"><strong>destination:</strong> This is the file which needs to populated. In our case, it will be the <code>HAProxy.cfg</code> file.</li>
+				<li class="list-group-item"><strong>command:</strong> This is the command which has to be run at the end of file update. In our case, it will be the reloading haproxy service using either <code>service haproxy reload</code> or <code>haproxy -f /etc/haproxy/haproxy.cfg -sf $(pidof haproxy)</code></li>
+			</ul>
+			Using the above config we can then start the consul-template daemon
+			<pre><code>consul-template -config /tmp/haproxy.json \
+			-consul-addr 127.0.0.1:8500</code></pre>
+			<p>This concludes our Loadbalancing setup. As and when there is a change in Consul data, consul-template will write the available services into <code>HAProxy.cfg</code> and reload the haproxy service. This way we will always have the loadbalancer routing setup configured for all the discovered service instances at any given time</p>
+			
+          </div><!-- /.blog-post -->
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+			<div class="sidebar-module">
+			  <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
+			  <div class="LI-profile-badge"  data-version="v0" data-size="medium" data-locale="en_US" data-type="vertical" data-theme="light" data-vanity="ameyaadvankar"><a class="LI-simple-link" href='https://www.linkedin.com/in/ameyaadvankar?trk=profile-badge'>Ameya Advankar</a></div>
+			</div>
+			<div class="sidebar-module">
+				<h4>Articles</h4>
+				<ul class="list-unstyled">
+				  <li><a href="/loadbalancerDetails.html">Loadbalancer & Service Discovery Setup details</a></li>
+				  <li><a href="/index.html">Loadbalancer & Service Discovery</a></li>
+				</ul>
+			</div>
+			<div class="sidebar-module">
+				<h4>Connect</h4>
+				<ol class="list-unstyled">
+				  <li><a href="https://github.com/Ameya05" target="_blank">GitHub</a></li>
+				  <li><a href="https://www.linkedin.com/in/ameyaadvankar" target="_blank">LinkedIn</a></li>
+				  <li><a href="https://www.facebook.com/Ameya05" target="_blank">Facebook</a></li>
+				</ol>
+			</div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+  </body>
+</html>
