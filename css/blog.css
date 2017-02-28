@@ -165,14 +165,6 @@ h6, .h6 {
   margin-bottom: 0;
 }
 
-table {
-    border-collapse: collapse;
-}
-
-table, th, td {
-    border: 1px solid black;
-}
-
 h3, h4 {
 	font-weight: bold;
 }
