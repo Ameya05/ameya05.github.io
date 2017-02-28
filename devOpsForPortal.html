@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="My Blog">
+    <meta name="author" content="Ameya Advankar">
+
+    <title>My Randezvous with Tech</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/blog.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">My Randezvous with Tech</h1>
+        <p class="lead blog-description">A brief insight on various tech related topics</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">DevOps</h2>
+            <p class="blog-post-meta">February 27, 2017 by <a href="#">Ameya Advankar</a></p>
+			
+            <hr>
+			<h3>Problem Statement:</h3>
+			<hr>
+			Setup DevOps for the Portal instances.
+					
+			<hr>
+			<h3>Detailed Solution:</h3>	
+			<hr>
+			
+			<h4> Terraform </h4>
+			<p>In the initial stages of development, we had configured CI/CD for the portal and loadbalancer which deployed code on every commit to the Auto Scaling setup. However, we were still required to log into AWS Console to create an Auto-Scaling Configuration and launch it for the cloud environment to be setup. This manual setup did not conform to the DevOps principles. </p>
+			<p>Terraform seemed like a possible solution to this and was found to be feasible for provisioning Cloud setups over Amazon EC2. It provides a simple way to create / modify an Auto-Scaling group of Cloud instances using just a few configuration files.</p>
+			<p>Continuing on the Terraform setup done for the API-Server, I have extended it to the Portal.  The Portal DevOps setup has been configured at the moment to create just the cloud environment. Once we have the Django portal, we need to add its install commands at the end of the <code>userdata.sh</code> file. This will effectively install and start the Portal on any spawned up instance without the need to deploy it again.</p>
+			
+			<hr>
+			<h3> Conclusion </h3>
+        	<hr>
+         	<p> For now, we are using Terraform for setting up Auto Scaling groups on Amazon EC2.  However Terraform lacks some features when it comes to OpenStack as identified by Anuj Bhandar in <a href="https://github.com/airavata-courses/spring17-devops/issues/4">this Discussion</a> and hence we may probably move to an alternative technology to provision cloud instances over OpenStack. Future plans are to create a Cloud Agnostic DevOps setup.</p>
+         	
+         	<hr>
+			<h3>Associated Github issues</h3>
+			<hr>
+			<ul>
+				<li><a href="https://github.com/airavata-courses/spring17-devops/issues/3">Infrastructure as code </a></li>
+				<li>Other commit - <a href="https://github.com/airavata-courses/spring17-laravel-portal/commit/84034023c4042849a980eb62f9a4cb683749818f">Adding userdata script for creating HA LB Instance.</a></li>
+			</ul>
+         	
+          </div><!-- /.blog-post -->
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+			<div class="sidebar-module">
+			  <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
+			  <div class="LI-profile-badge"  data-version="v0" data-size="medium" data-locale="en_US" data-type="vertical" data-theme="light" data-vanity="ameyaadvankar"><a class="LI-simple-link" href='https://www.linkedin.com/in/ameyaadvankar?trk=profile-badge'>Ameya Advankar</a></div>
+			</div>
+			<div class="sidebar-module">
+				<h4>Articles</h4>
+				<ul class="list-unstyled">
+			  	  <li><a href="/devOpsForPortal.html">DevOps</a></li>
+				  <li><a href="/loadbalancerDetails.html">Loadbalancer & Service Discovery Setup details</a></li>
+				  <li><a href="/">Loadbalancer & Service Discovery</a></li>
+				</ul>
+			</div>
+			<div class="sidebar-module">
+				<h4>Connect</h4>
+				<ol class="list-unstyled">
+				  <li><a href="https://github.com/Ameya05" target="_blank">GitHub</a></li>
+				  <li><a href="https://www.linkedin.com/in/ameyaadvankar" target="_blank">LinkedIn</a></li>
+				  <li><a href="https://www.facebook.com/Ameya05" target="_blank">Facebook</a></li>
+				</ol>
+			</div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+  </body>
+</html>
