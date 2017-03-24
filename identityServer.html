@@ -32,7 +32,7 @@
 
           <div class="blog-post">
             <h2 class="blog-post-title">Light weight Identity Server</h2>
-            <p class="blog-post-meta">February 27, 2017 by <a href="#">Ameya Advankar</a></p>
+            <p class="blog-post-meta">March 23rd, 2017 by <a href="#">Ameya Advankar</a></p>
 			
             <hr>
 			<h3>Problem Statement:</h3>
@@ -43,47 +43,45 @@
 			<h3>Problem Evaluation:</h3>	
 			<hr>
 			
-			<p></p>
-			<table width="100%" class="table-striped">
-				<caption>Following are some of the Identity Servers being considered so far.</caption>
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Identity Servers</th>
-					</tr>	
-				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td><a href="https://docs.wso2.com/display/IS500/Introducing+the+Identity+Server">WSO2</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td><a href="https://shiro.apache.org/">Apache Shiro</a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td><a href="http://www.keycloak.org/about.html">keycloak</a></td>
-					</tr>
-				</tbody>
-			</table>
-			<br>	
-			<p>Evaluation is in progress</p>
-				
-			<!--hr>
+			<p><a href="www.keycloak.org" target="_blank">Keycloak</a> provides for an open source light-weight identity provider and was chosen as the Identity Server. Keycloak is OpenID Connect compliant and thus can be plugged into any application which implements OpenID Connect specified api calls for authentication and identity management.</p>
+			<br>
+			Following factors were considered while selecting the grant flow type to be implemented:
+			
+			<ul>
+				<li>The Django portal will be accessed by the users via a web browser and can be used to redirect the user to the Identity provider authentication page.<sup>[1]</sup></li>
+				<li>The Users may not trust the portal as much to enter their credentials directly in the portal</li>
+				<li>The front-end code on the client browser which is in Javascript cannot be trusted for holding the user's id_token</li>
+			</ul>
+			
+			Considering the above factors in mind, the Authorization Code grant flow was selected to be implemented in the Django portal.
+			<hr>
 			<h3>Detailed Solution:</h3>	
 			<hr>
-			<p></p>
+			<p>While implementing the authentication mechanism in the Django portal, we had to ensure that the code was IdP agnostic i.e. any OpenID Connect complaint IdP should be pluggable via configuration.</p>
+			
+			Pictured below is the detailed flow of the implementation.
+			<img src="images/IdP_Architecture.png">
+			
+			<p>Code implementation can be found in the <a href="https://github.com/airavata-courses/spring17-django-portal/tree/develop">spring17-django-portal github</a> develop branch</p> 
 			
 			<hr>
 			<h3> Conclusion </h3>
         	<hr>
-         	<p> For now, we are using Terraform for setting up Auto Scaling groups on Amazon EC2.  However Terraform lacks some features when it comes to OpenStack as identified by Anuj Bhandar in <a href="https://github.com/airavata-courses/spring17-devops/issues/4">this Discussion</a> and hence we may probably move to an alternative technology to provision cloud instances over OpenStack. Future plans are to create a Cloud Agnostic DevOps setup.</p>
+         	<p> Authorization code grant flow was identified as the suitable flow for the Django portal. A poc has been implemented in the <a href="https://github.com/airavata-courses/spring17-django-portal/tree/develop">spring17-django-portal github</a></p>
          	
          	<hr>
-			<h3>Associated Github issues</h3>
-			<hr-->
-         	
+			  <h3>Associated Github issues</h3>
+			<hr>
+        	<ul>
+        		<li><a href="https://github.com/airavata-courses/spring17-django-portal/issues/3">Authentication using Identity Server</a></li>
+        	</ul>
+        		
+         	<hr>
+			  <h3>References</h3>
+			  <ol>
+			  	<li>S. Nakandala, H. Gunasinghe, S. Marru, and M. Pierce, <em>"Apache Airavata Security Manager: Authentication and Authorization Implementations for a Multi-Tenant eScience Framework"</em></li>
+			  </ol>
+			<hr>
           </div><!-- /.blog-post -->
 
         </div><!-- /.blog-main -->
