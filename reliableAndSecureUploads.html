@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="My Blog">
+    <meta name="author" content="Ameya Advankar">
+
+    <title>My Randezvous with Tech</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/blog.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">My Randezvous with Tech</h1>
+        <p class="lead blog-description">A brief insight on various tech related topics</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">Exploring tus.io</h2>
+            <p class="blog-post-meta">April 27th, 2017 by <a href="#">Ameya Advankar</a></p>
+			
+            <hr>
+			<h3>Problem Statement:</h3>
+			<hr>
+			Scientists utilizing the Scientific Gateways often upload large input files for running Experiments. These uploads which are done through the Science Gateway Portals are over HTTP. There are 2 inherent problems arising out of this architecture: 
+			
+			<ol>
+				<li>
+					<b><a name="first">Unreliable HTTP connection: </a></b><br>
+					<p> As the uploads are over HTTP, these are highly reliant on a continuous internet connection being available on the Client machine. Often times, there are network disruptions or connectivity issues and the File upload fails. As a result, the users may have to retry uploads manually and wait for a successful upload to take place.</p>
+				</li>
+				<li>
+					<b><a name="second">Space constraints on Gateway servers: </a></b><br>
+					<p>Since the file is being uploaded to the Science Gateway portal, it has to be staged in the Portal until it is required which may be a considerable amount of time. In case multiple large files are uploaded at the same time, the web server running the Science Gateway may run out of server space and this could have adverse affects on the performance.</p>
+					<p>Also, Many a times, multiple Science Gateway Portals are hosted on a Single Web server. In this scenario, a particular Portal which gets multiple large files may affect other Portals performance as well.</p>
+				</li>
+			</ol>
+				
+			<hr>
+			<h3>Problem Evaluation:</h3>	
+			<hr>
+			
+			  <p>To combat the <a href="#first">First issue of Unreliable HTTP connection</a>, it has to be ensured that subsequent auto-retries for uploading the file are done. Along with auto-retries, the data transfer between Client and server should be minimized by not re-uploading chunks of data which was already uploaded prior to failure of connection. This feature has been implemented by multiple Javascript libraries. Notable among these are : </p>
+			  
+			<div class="list-group">
+			  <a href="http://www.resumablejs.com/" class="list-group-item">Resumable.js</a>
+			  <a href="https://github.com/flowjs/flow.js" class="list-group-item">Flow.js</a>
+			  <a href="https://fineuploader.com/" class="list-group-item">File Uploader</a>
+			  <a href="tus.io" class="list-group-item">tus.io Client/Server</a>
+			</div>
+			  
+			  <p>All the Javascript libraries mentioned above are fully capable of performing resumable uploads. However due to their unique implementations, it may be difficult to extend the functionalities to suit our applications need.</p>
+			  <p><strong>tus.io</strong> establishes an open protocol which aims to solve the problem of unreliable file uploads once and for all. To think of it, tus.io specifies a set of rules, which, if followed by the client & server implementations, would allow any such implementation to successfully exhibit reliable and resumable File upload system.</p>
+			  
+			  <p><a href="#second">The second problem</a> pertaining to space issues arising out of uploaded content, can be solved by having the upload Server-implementation run on a dedicated separate remote Application server instance. This way, in case of large upload files, the upload traffic gets directed to the upload server and the Application Server on which the Scientific Portals are located would not get hampered.</p>
+			  <p>These remote Server instances which would be used for Uploading files, should be secured in a similar manner as the Portals are secured i.e. using an Identity and Access Management system. tus.io has a concept of <a href="https://github.com/tus/tusd/blob/master/docs/hooks.md" target="_blank" >hooks</a> which allows us to execute code at certain stages of the upload proces. The <code>pre-create</code> hook can be used for implementing Auth checking in the upload server. This prevents any unauthorized access to the File-Upload server and thus ensures the security of the entire system.</p>
+			  
+			<hr>
+			<h3>Detailed Solution:</h3>	
+			<hr>
+			<p></p>
+			
+			In progress
+			<hr>
+          </div><!-- /.blog-post -->
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+			<div class="sidebar-module">
+			  <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
+			  <div class="LI-profile-badge"  data-version="v0" data-size="medium" data-locale="en_US" data-type="vertical" data-theme="light" data-vanity="ameyaadvankar"><a class="LI-simple-link" href='https://www.linkedin.com/in/ameyaadvankar?trk=profile-badge'>Ameya Advankar</a></div>
+			</div>
+			<div class="sidebar-module">
+				<h4>Articles</h4>
+				<ul class="list-unstyled">
+	  	  			<li><a href="/reliableAndSecureUploads.html">Exploring tus.io</a></li>
+		  	  		<li><a href="/identityServer.html">Identity Server</a></li>
+			  		<li><a href="/devOpsForPortal.html">DevOps</a></li>
+					<li><a href="/loadbalancerDetails.html">Loadbalancer & Service Discovery Setup details</a></li>
+					<li><a href="/">Loadbalancer & Service Discovery</a></li>
+				</ul>
+			</div>
+			<div class="sidebar-module">
+				<h4>Connect</h4>
+				<ol class="list-unstyled">
+				  <li><a href="https://github.com/Ameya05" target="_blank">GitHub</a></li>
+				  <li><a href="https://www.linkedin.com/in/ameyaadvankar" target="_blank">LinkedIn</a></li>
+				  <li><a href="https://www.facebook.com/Ameya05" target="_blank">Facebook</a></li>
+				</ol>
+			</div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+  </body>
+</html>
