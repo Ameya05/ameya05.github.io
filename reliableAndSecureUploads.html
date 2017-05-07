@@ -32,50 +32,57 @@
 
           <div class="blog-post">
             <h2 class="blog-post-title">Exploring tus.io</h2>
-            <p class="blog-post-meta">April 27th, 2017 by <a href="#">Ameya Advankar</a></p>
+            <p class="blog-post-meta">May 6th, 2017 by <a href="#">Ameya Advankar</a></p>
 			
             <hr>
 			<h3>Problem Statement:</h3>
 			<hr>
-			Scientists utilizing the Scientific Gateways often upload large input files for running Experiments. These uploads which are done through the Science Gateway Portals are over HTTP. There are 2 inherent problems arising out of this architecture: 
-			
+			<p>
+		  		Scientists utilizing the Scientific Gateways often upload large input files for running Experiments. These uploads which are done through the Science Gateway Portals are over HTTP. There are 2 inherent problems arising out of this architecture. 
+			</p>
+			<div class="list-group">
+			  <a class="list-group-item">Unreliable HTTP connection</a>
+			  <a  class="list-group-item">Space constraints on Gateway servers</a>
+			</div>
+			<hr>
+			<h3>Problem Evaluation:</h3>
+			<hr>
 			<ol>
 				<li>
 					<b><a name="first">Unreliable HTTP connection: </a></b><br>
-					<p> As the uploads are over HTTP, these are highly reliant on a continuous internet connection being available on the Client machine. Often times, there are network disruptions or connectivity issues and the File upload fails. As a result, the users may have to retry uploads manually and wait for a successful upload to take place.</p>
+					<p> As the uploads are HTTP uploads, these are highly reliant on a continuous internet connection being available on the client machine. Often times, there are network disruptions or connectivity issues and the file upload fails. As a result, the users may have to retry uploads manually and wait for a successful upload to take place.</p>
 				</li>
 				<li>
 					<b><a name="second">Space constraints on Gateway servers: </a></b><br>
-					<p>Since the file is being uploaded to the Science Gateway portal, it has to be staged in the Portal until it is required which may be a considerable amount of time. In case multiple large files are uploaded at the same time, the web server running the Science Gateway may run out of server space and this could have adverse affects on the performance.</p>
-					<p>Also, Many a times, multiple Science Gateway Portals are hosted on a Single Web server. In this scenario, a particular Portal which gets multiple large files may affect other Portals performance as well.</p>
+					<p>The file which is being uploaded usually has to be staged somewhere for a certain period of time till it is picked up for further processing, which may take a considerable amount of time. Often times, these files are staged in the same web server on which the Science Gateway Portal is hosted. In case multiple large files are uploaded at the same time, the host machine may run out of space and this could have adverse affects on the performance of the Portal.</p>
+					<p>Also, there could be cases in which multiple Science Gateway Portals are hosted on a the same web server. If in such a setting, a particular Portal fills up server space with multiple large files, it may affect the performance of other Portals residing on that host server as well. In short, the files-upload functionality should not affect the Portal performance. </p>
 				</li>
 			</ol>
 				
 			<hr>
-			<h3>Problem Evaluation:</h3>	
+			<h3>Solution Evaluation:</h3>	
 			<hr>
 			
-			  <p>To combat the <a href="#first">First issue of Unreliable HTTP connection</a>, it has to be ensured that subsequent auto-retries for uploading the file are done. Along with auto-retries, the data transfer between Client and server should be minimized by not re-uploading chunks of data which was already uploaded prior to failure of connection. This feature has been implemented by multiple Javascript libraries. Notable among these are : </p>
+			  <p>To combat the <a href="#first">First issue of Unreliable HTTP connection</a>, it has to be ensured that subsequent retries for uploading the file are done automatically. Along with auto-retries, the data transfer between client and server should be minimized by not re-uploading chunks of data which were already uploaded prior to failure of connection. This feature has already been implemented by multiple JavaScript libraries. Notable among these are: </p>
 			  
 			<div class="list-group">
 			  <a href="http://www.resumablejs.com/" class="list-group-item">Resumable.js</a>
 			  <a href="https://github.com/flowjs/flow.js" class="list-group-item">Flow.js</a>
-			  <a href="https://fineuploader.com/" class="list-group-item">File Uploader</a>
-			  <a href="tus.io" class="list-group-item">tus.io Client/Server</a>
+			  <a href="https://fineuploader.com/" class="list-group-item">Fine Uploader</a>
 			</div>
 			  
-			  <p>All the Javascript libraries mentioned above are fully capable of performing resumable uploads. However due to their unique implementations, it may be difficult to extend the functionalities to suit our applications need.</p>
+			  <p>All the Javascript libraries mentioned above are fully capable of performing resumable uploads. However, these implementations vary and there are no common standardized server implementations for handling the file uploads using these JavaScript libraries.</p>
 			  <p><strong>tus.io</strong> establishes an open protocol which aims to solve the problem of unreliable file uploads once and for all. To think of it, tus.io specifies a set of rules, which, if followed by the client & server implementations, would allow any such implementation to successfully exhibit reliable and resumable File upload system.</p>
 			  
 			  <p><a href="#second">The second problem</a> pertaining to space issues arising out of uploaded content, can be solved by having the upload Server-implementation run on a dedicated separate remote Application server instance. This way, in case of large upload files, the upload traffic gets directed to the upload server and the Application Server on which the Scientific Portals are located would not get hampered.</p>
 			  <p>These remote Server instances which would be used for Uploading files, should be secured in a similar manner as the Portals are secured i.e. using an Identity and Access Management system. tus.io has a concept of <a href="https://github.com/tus/tusd/blob/master/docs/hooks.md" target="_blank" >hooks</a> which allows us to execute code at certain stages of the upload proces. The <code>pre-create</code> hook can be used for implementing Auth checking in the upload server. This prevents any unauthorized access to the File-Upload server and thus ensures the security of the entire system.</p>
 			  
 			<hr>
-			<h3>Detailed Solution:</h3>	
-			<hr>
-			<p></p>
-			
-			In progress
+			<h3>Conclusion:</h3>
+			<p>tus.io offers a standardized protocol which has advantages over individual upload libraries. The base advantage of being reliant on a protocol is that it removes dependency on a specific language and library, thus allowing for Gateway Portals written in multiple languages such as PHP, Java, Python to implement their own file upload functionality conforming to the tus.io protocol specifications.</p>
+			<p>Due to this decoupling, multiple Science Gateway Portals such as desktop, web, native portals could connect to a single tus.io compliant server implemented by the Science Gateway and securely upload files without affecting the Portal performance.</p>
+			<p>Though the JavaScript libraries offer a quick short term solution, the tus.io client-server implementation emerged as a much better, scalable, flexible and maintainable file-upload implementation for Science Gateways from a long term perspective.</p>
+					
 			<hr>
           </div><!-- /.blog-post -->
 
